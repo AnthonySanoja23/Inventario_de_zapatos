@@ -1,121 +1,22 @@
 import os
+import json 
+from pathlib import Path
+my_file = Path("data.json")
 
-zapatos = [
-			{
-				'Modelo':'zapTAN37',
-				'Descripción':'Tacón alto negro  ',
-				'talla':'  37',
-				'precio':'95000.00',
-				'cantidad':'  10',
-				
-				
-			},
+zapatos = []
 
-			{
-				'Modelo':'zapTAN38',
-				'Descripción':'Tacón alto negro  ',
-				'talla':'  38',
-				'precio':'95000.00',
-				'cantidad':'  10',
-				
-				
-			},
 
-			{
-				'Modelo':'zapTAN39',
-				'Descripción':'Tacón alto negro  ',
-				'talla':'  39',
-				'precio':'95000.00',
-				'cantidad':'  10',
-				
-				
-			},
+if my_file.exists():
 
-			{
-				'Modelo':'zapTAM37',
-				'Descripción':'Tacón alto marrón ',
-				'talla':'  37',
-				'precio':'92500.00',
-				'cantidad':'  7 ',
-				
-				
-			},
+	archivo = open("data.json", "r")
+	datos = archivo.read()
+	archivo.close()
+	zapatos = json.loads(datos)	
 
-			{
-				'Modelo':'zapTAM38',
-				'Descripción':'Tacón alto marrón ',
-				'talla':'  38',
-				'precio':'92500.00',
-				'cantidad':'  7 ',
-				
-				
-			},
+else:
 
-			{
-				'Modelo':'zapTAM39',
-				'Descripción':'Tacón alto marrón ',
-				'talla':'  39',
-				'precio':'92500.00',
-				'cantidad':'  7 ',
-				
-				
-			},
-
-			{
-				'Modelo':'zapTMN37',
-				'Descripción':'Tacón medio negro ',
-				'talla':'  37',
-				'precio':'85000.00',
-				'cantidad':'  12',
-							
-			},
-
-			{
-				'Modelo':'zapTMN38',
-				'Descripción':'Tacón medio negro ',
-				'talla':'  38',
-				'precio':'85000.00',
-				'cantidad':'  12',
-							
-			},
-
-			{
-				'Modelo':'zapTMN39',
-				'Descripción':'Tacón medio negro ',
-				'talla':'  39',
-				'precio':'85000.00',
-				'cantidad':'  12',
-							
-			},
-
-			{
-				'Modelo':'zapTMM37',
-				'Descripción':'Tacón medio marrón',
-				'talla':'  37',
-				'precio':'83500.00',
-				'cantidad':'  8 ',
-					
-			},
-
-			{
-				'Modelo':'zapTMM38',
-				'Descripción':'Tacón medio marrón',
-				'talla':'  38',
-				'precio':'83500.00',
-				'cantidad':'  8 ',
-				
-				
-			},
-
-			{
-				"Modelo":"zapTMM39",
-				"Descripción":"Tacón medio marrón",
-				"talla":"  39",
-				"precio":"83500.00",
-				"cantidad":"  8 ",
-			} 
-			
-]
+	print("No hay data cargada debido a que el archivo no existe ")
+	input("Presione una tecla para continuar")	
 
 def Fabricar(zapato_codigo,zapatos_a_fabricar):
 
@@ -123,6 +24,10 @@ def Fabricar(zapato_codigo,zapatos_a_fabricar):
 	cantidad = int(info_dic["cantidad"])
 	suma = str(cantidad + zapatos_a_fabricar)
 	info_dic["cantidad"]="  "+suma+"" 
+
+	guardar_en_json()
+
+	
 	print('Agregadas {} unidades del modelo {}'.format(zapatos_a_fabricar,zapato_codigo))
 	print('Existencia del modelo {}: {}'.format(zapato_codigo,suma))
 
@@ -136,7 +41,10 @@ def Despachar(zapato_codigo,zapatos_a_despachar):
 	
 	if cantidad >= zapatos_a_despachar:
 		resta = str(cantidad - zapatos_a_despachar)
-		info_dic["cantidad"]="  "+resta+" " 
+		info_dic["cantidad"]=" "+resta+""
+
+		guardar_en_json()
+
 		print('Despachados {} unidades del modelo {}'.format(zapatos_a_despachar,zapato_codigo))
 		print('Existencia del modelo {}: {}'.format(zapato_codigo,resta))
 	else:
@@ -150,13 +58,13 @@ def listar_zapatos():
 			print('\n')
 			global zapatos
 			print(' _'*33)
-			print('|MODELO   |   Descripción        |  Talla  |  precio   | cantidad |')
+			print('|MODELO   |   Descripcion        |  Talla  |  precio   | cantidad |')
 			print(' _'*33)				 
 			for idx, zapato in enumerate(zapatos):
 
-					print('|{Modelo} | {Descripción}   | {talla}    | {precio}  | {cantidad}     |'.format(
+					print('|{Modelo} | {Descripcion}   | {talla}    | {precio}  | {cantidad}     |'.format(
 					Modelo=zapato['Modelo'],
-					Descripción=zapato['Descripción'],
+					Descripcion=zapato['Descripcion'],
 					talla=zapato['talla'],
 					precio=zapato['precio'],
 					cantidad=zapato['cantidad']))
@@ -193,15 +101,21 @@ def _obtener_codigo_zapato(zapato_campo):
 	
 		return campo
 
+def guardar_en_json():
+
+	datos = json.dumps(zapatos)
+	f = open('data.json','w')
+	f.write(datos)
+	f.close()
 
 
 
 def _menu():
 
 		os.system('clear')
-		print('\t'+'*'*21)
+		print('\t'+'*'*20)
 		print('\t'+'* Menu de selecion * ')
-		print('\t'+'*'*21)
+		print('\t'+'*'*20)
 
 		
 		print('1. Entregar ')
@@ -217,7 +131,7 @@ if __name__=='__main__':
 
 		_menu()
 		print('\n')
-		comando = input('Digite su opción: ')  
+		comando = input('Digite su opcion: ')  
 		 
 		if comando=='1':
 			zapato_codigo = _obtener_codigo_zapato('Modelo')
